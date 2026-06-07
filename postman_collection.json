@@ -1,0 +1,245 @@
+{
+  "info": {
+    "name": "ACARS Drama Jumpseat API",
+    "_postman_id": "f7d6335f-69f7-4f11-a3ad-acarsdrama",
+    "description": "Personal-project API for active ACARS Drama Jumpseat members. Set baseUrl and apiKey collection variables.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.jumpseat.acarsdrama.com"
+    },
+    {
+      "key": "apiKey",
+      "value": "sk_adjs_YOUR_SECRET_KEY"
+    },
+    {
+      "key": "stationIdentifier",
+      "value": "#sabc123"
+    },
+    {
+      "key": "comboKey",
+      "value": "UA123|N123AB"
+    },
+    {
+      "key": "date",
+      "value": "2026-06-01"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{apiKey}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "API metadata",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1"
+          ],
+          "query": []
+        },
+        "description": "Requires Authorization: Bearer {{apiKey}}"
+      }
+    },
+    {
+      "name": "Search messages",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/messages/search?source=messages&q=smell&limit=10",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "messages",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "source",
+              "value": "messages"
+            },
+            {
+              "key": "q",
+              "value": "smell"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "description": "Requires Authorization: Bearer {{apiKey}}"
+      }
+    },
+    {
+      "name": "Archive category search",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/messages/search?source=messages_archive&category=medical&from=2026-06-01T00:00:00&to=2026-06-02T00:00:00&limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "messages",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "source",
+              "value": "messages_archive"
+            },
+            {
+              "key": "category",
+              "value": "medical"
+            },
+            {
+              "key": "from",
+              "value": "2026-06-01T00:00:00"
+            },
+            {
+              "key": "to",
+              "value": "2026-06-02T00:00:00"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Requires Authorization: Bearer {{apiKey}}"
+      }
+    },
+    {
+      "name": "Flight playback options",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/flight-playback/options?date={{date}}&q=UA",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "flight-playback",
+            "options"
+          ],
+          "query": [
+            {
+              "key": "date",
+              "value": "{{date}}"
+            },
+            {
+              "key": "q",
+              "value": "UA"
+            }
+          ]
+        },
+        "description": "Requires Authorization: Bearer {{apiKey}}"
+      }
+    },
+    {
+      "name": "Flight playback messages",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/flight-playback/messages?date={{date}}&comboKey={{comboKey}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "flight-playback",
+            "messages"
+          ],
+          "query": [
+            {
+              "key": "date",
+              "value": "{{date}}"
+            },
+            {
+              "key": "comboKey",
+              "value": "{{comboKey}}"
+            }
+          ]
+        },
+        "description": "Requires Authorization: Bearer {{apiKey}}"
+      }
+    },
+    {
+      "name": "Station report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/stations/report?stations={{stationIdentifier}}&source=all",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "stations",
+            "report"
+          ],
+          "query": [
+            {
+              "key": "stations",
+              "value": "{{stationIdentifier}}"
+            },
+            {
+              "key": "source",
+              "value": "all"
+            }
+          ]
+        },
+        "description": "Requires Authorization: Bearer {{apiKey}}"
+      }
+    },
+    {
+      "name": "Insights",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/insights?limit=10",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "insights"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "description": "Requires Authorization: Bearer {{apiKey}}"
+      }
+    }
+  ]
+}

@@ -1,0 +1,777 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ACARS Drama Jumpseat API",
+    "version": "0.1.0",
+    "description": "Member API for personal projects. Access requires an active ACARS Drama Jumpseat membership and a bearer token prefixed with sk_adjs_. Businesses and commercial users must contact ACARS Drama before using this API."
+  },
+  "servers": [
+    {
+      "url": "https://api.jumpseat.acarsdrama.com",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyBearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Messages",
+      "description": "Search cleaned ACARS/VDLM2 message text and metadata."
+    },
+    {
+      "name": "Flight Playback",
+      "description": "Replay messages for a flight / registration combo."
+    },
+    {
+      "name": "Stations",
+      "description": "Station Identifier reports. Raw station/feed IDs are not returned."
+    },
+    {
+      "name": "Insights",
+      "description": "ACARS Drama insights posts."
+    },
+    {
+      "name": "Metadata",
+      "description": "API metadata and usage guidance."
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "sk_adjs_..."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "messages",
+              "messages_archive"
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "registration": {
+            "type": "string",
+            "nullable": true
+          },
+          "flightNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "protocol": {
+            "type": "string",
+            "nullable": true
+          },
+          "direction": {
+            "type": "string",
+            "nullable": true
+          },
+          "directionLabel": {
+            "type": "string"
+          },
+          "stationIdentifier": {
+            "type": "string",
+            "nullable": true,
+            "description": "Redacted Station Identifier value, for example #sabc123. Raw station/feed IDs are not returned."
+          },
+          "stationLocation": {
+            "type": "string",
+            "nullable": true
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "animals",
+                "badpax",
+                "crewing_ops",
+                "emergencies_failures",
+                "excreta",
+                "medical",
+                "ride_reports",
+                "top_shelf",
+                "wtf",
+                "wx"
+              ]
+            }
+          },
+          "isAutomated": {
+            "type": "boolean"
+          },
+          "messageKind": {
+            "type": "string"
+          },
+          "cleanedText": {
+            "type": "string",
+            "nullable": true
+          },
+          "isPublished": {
+            "type": "boolean"
+          },
+          "aircraft": {
+            "type": "object",
+            "properties": {
+              "icaoType": {
+                "type": "string",
+                "nullable": true
+              },
+              "friendlyType": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
+          "identifiers": {
+            "type": "object",
+            "properties": {
+              "absurdId": {
+                "type": "string",
+                "nullable": true
+              },
+              "farcicalId": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        }
+      },
+      "FlightCombo": {
+        "type": "object",
+        "properties": {
+          "comboKey": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "registration": {
+            "type": "string",
+            "nullable": true
+          },
+          "flightNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "messageCount": {
+            "type": "integer"
+          },
+          "firstSeen": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastSeen": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "FlightPlaybackMessage": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "messageId": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "registration": {
+            "type": "string",
+            "nullable": true
+          },
+          "flightNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "effectiveFlightNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "protocol": {
+            "type": "string",
+            "nullable": true
+          },
+          "direction": {
+            "type": "string",
+            "nullable": true
+          },
+          "isPublished": {
+            "type": "boolean"
+          },
+          "stationIdentifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "stationLocation": {
+            "type": "string",
+            "nullable": true
+          },
+          "cleanedText": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAutomated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Insight": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "topicKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "integer",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Missing, invalid, or revoked API key.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PaymentRequired": {
+        "description": "Jumpseat membership is not active for this API key.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Global API rate limit exceeded.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1": {
+      "get": {
+        "tags": [
+          "Metadata"
+        ],
+        "summary": "API metadata",
+        "description": "Returns available endpoint names and usage notes.",
+        "responses": {
+          "200": {
+            "description": "API metadata"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PaymentRequired"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/v1/messages/search": {
+      "get": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Search messages",
+        "description": "Search cleaned ACARS/VDLM2 text and metadata. Results keep station identifiers redacted as #s values.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Full-text search over cleaned/raw message text.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Start timestamp, for example 2026-06-01T00:00:00.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "End timestamp, for example 2026-06-02T00:00:00.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "registration",
+            "in": "query",
+            "required": false,
+            "description": "Aircraft registration filter.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "flightNumber",
+            "in": "query",
+            "required": false,
+            "description": "Flight number filter.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "protocol",
+            "in": "query",
+            "required": false,
+            "description": "Protocol filter.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACARS",
+                "VDLM2"
+              ]
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "description": "Direction filter.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "From",
+                "To"
+              ]
+            }
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "required": false,
+            "description": "Published filter.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "any",
+                "1",
+                "0"
+              ]
+            }
+          },
+          {
+            "name": "stationIdentifier",
+            "in": "query",
+            "required": false,
+            "description": "Redacted Station Identifier such as #sabc123.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "messageKind",
+            "in": "query",
+            "required": false,
+            "description": "Message kind.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "any",
+                "human",
+                "automated"
+              ]
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "Message category.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "animals",
+                "badpax",
+                "crewing_ops",
+                "emergencies_failures",
+                "excreta",
+                "medical",
+                "ride_reports",
+                "top_shelf",
+                "wtf",
+                "wx"
+              ]
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "description": "Source table selection.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "messages",
+                "messages_archive",
+                "all"
+              ]
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "description": "Sort order.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "timestamp",
+                "oldest"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum rows, capped at 500.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Message"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PaymentRequired"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/v1/flight-playback/options": {
+      "get": {
+        "tags": [
+          "Flight Playback"
+        ],
+        "summary": "List flight / registration combos for a date",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "description": "Date in YYYY-MM-DD format.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Optional flight / registration search text.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Flight combos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FlightCombo"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PaymentRequired"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/v1/flight-playback/messages": {
+      "get": {
+        "tags": [
+          "Flight Playback"
+        ],
+        "summary": "Chronological flight playback messages",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "description": "Date in YYYY-MM-DD format.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "comboKey",
+            "in": "query",
+            "required": true,
+            "description": "Combo key from /v1/flight-playback/options, e.g. UA123|N123AB.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Playback messages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FlightPlaybackMessage"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PaymentRequired"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/v1/stations/report": {
+      "get": {
+        "tags": [
+          "Stations"
+        ],
+        "summary": "Station Identifier report",
+        "parameters": [
+          {
+            "name": "stations",
+            "in": "query",
+            "required": true,
+            "description": "Comma-separated redacted Station Identifier values, e.g. #sabc123,#sdef456.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Start timestamp.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "End timestamp.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "description": "Source selection.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "messages",
+                "messages_archive",
+                "all"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Station report"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PaymentRequired"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/v1/insights": {
+      "get": {
+        "tags": [
+          "Insights"
+        ],
+        "summary": "Recover ACARS Drama insight posts",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of insight posts, 1-50.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "topicKey",
+            "in": "query",
+            "required": false,
+            "description": "Optional exact topic key.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insights",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Insight"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "items": [
+                    {
+                      "content": "An American 737 advised ATC it cannot accept further delay and may declare if necessary. Crew added landing weight will be below max, suggesting the priority is operational rather than overweight landing.",
+                      "createdAt": "2026-06-04T23:20:27.000Z",
+                      "id": 583,
+                      "parentId": null,
+                      "topicKey": "aa2874-delay-fuel-emergency-risk"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PaymentRequired"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    }
+  }
+}
